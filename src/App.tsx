@@ -1,11 +1,12 @@
 import { Routes, Route } from '../node_modules/react-router-dom/dist/index';
-import Home from './_root/pages/Home';
-import AuthLayout from './_auth/forms/AuthLayout';
+
 import SignupForm from './_auth/forms/SignupForm';
 import SigninForm from './_auth/forms/SigninForm';
-import RootLayout from './_root/pages/RootLayout';
-
 import "./globals.css";
+import AuthLayout from './_auth/AuthLayout';
+import RootLayout from './_root/RootLayout';
+import Home from './_root/pages/Home';
+
 
 const App = () => {
     return (

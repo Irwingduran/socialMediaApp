@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { Link } from "react-router-dom"
+import { Link, useNagivate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -12,11 +12,14 @@ import { createUserAccount } from "@/lib/appwrite/api";
 import { useToast } from "@/components/ui/use-toast";
 import { useCreateUserAccount } from "@/lib/react-query/queries";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/context/AuthContext";
 
 const SignupForm = () => {
     const { toast } = useToast();
+    const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+    const navigate = useNagivate();
 
-    const { mutateAsync: createUserAccount, isLoading: isCreatingUser, } = useCreateUserAccount()
+    const { mutateAsync: createUserAccount, isLoading: isCreatingAccount, } = useCreateUserAccount();
 
     const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccount();
 
@@ -47,7 +50,17 @@ const SignupForm = () => {
             password: values.password,
         })
 
-        IdleDeadline(!session) {
+        if (!session) {
+            return toast({ title: 'Sign up failed. Please try again.' })
+        }
+
+        const isLoggedIn = await checkAuthUser();
+
+        if (isLoggedIn) {
+            form.reset();
+
+            navigate('/')
+        } else {
             return toast({ title: 'Sign up failed. Please try again.' })
         }
     }
